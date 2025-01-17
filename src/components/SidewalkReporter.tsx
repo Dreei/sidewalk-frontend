@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -86,33 +85,41 @@ const SidewalkReporter = () => {
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navigation tabs - responsive layout */}
-      <div className="fixed top-0 left-0 right-0 z-10 p-2 sm:absolute sm:top-4 sm:left-4 sm:right-auto">
-        <div className="flex justify-center space-x-2 sm:justify-start">
-          <button
-            className={`px-3 py-1.5 text-sm sm:px-4 sm:py-2 rounded-lg shadow-md transition-colors ${
-              activeTab === "map"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-50 text-gray-800"
-            }`}
-            onClick={() => setActiveTab("map")}
-          >
-            Map View
-          </button>
-          <button
-            className={`px-3 py-1.5 text-sm sm:px-4 sm:py-2 rounded-lg shadow-md transition-colors ${
-              activeTab === "analytics"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-50 text-gray-800"
-            }`}
-            onClick={() => setActiveTab("analytics")}
-          >
-            Analytics
-          </button>
+      <div className="fixed top-0 left-0 right-0 z-10 px-4 sm:absolute sm:left-4 sm:right-4">
+        <div className="flex justify-between items-center py-4 md:py-8">
+          <div className="flex space-x-4">
+            <button
+              className={`text-sm px-4 py-2 lg:px-3 lg:text-lg rounded-lg shadow-md transition-colors ${
+                activeTab === "map"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-50 text-gray-800"
+              }`}
+              onClick={() => setActiveTab("map")}
+            >
+              Map View
+            </button>
+            <button
+              className={`text-sm px-4 py-2 lg:px-3 lg:text-lg rounded-lg shadow-md transition-colors ${
+                activeTab === "analytics"
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-50 text-gray-800"
+              }`}
+              onClick={() => setActiveTab("analytics")}
+            >
+              Analytics
+            </button>
+          </div>
+          <img
+            src="/acssist.png"
+            alt="acssist"
+            className="w-24 sm:w-32 md:w-40" // Tailwind classes for responsiveness
+            style={{ maxWidth: "100%", height: "auto" }} // Ensure responsiveness without distortion
+          />
         </div>
       </div>
 
       {/* Main content area - adjusted for fixed header */}
-      <div className="h-[calc(100vh-3rem)] pt-12 sm:h-screen sm:pt-0">
+      <div className="h-[calc(100vh-3rem)]">
         {activeTab === "map" && (
           <MapView
             locations={locations}

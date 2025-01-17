@@ -243,7 +243,7 @@ export default function AnalyticsView({ locations, reports, emotions }) {
     <div className="space-y-4">
       <Card>
         <CardHeader>
-          <CardTitle className="pt-16">Area Selection</CardTitle>
+          <CardTitle className="pt-16 lg:pt-24">Area Selection</CardTitle>
         </CardHeader>
         <CardContent>
           <Select value={selectedArea} onValueChange={setSelectedArea}>
