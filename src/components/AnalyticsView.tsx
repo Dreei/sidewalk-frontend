@@ -1,15 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar } from 'recharts'
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts'
 import { Loader2 } from 'lucide-react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 const emotionColors = {
-  'good!': '#4CAF50', // Green
-  'okay!': '#FFEB3B', // Yellow
-  neutral: '#9E9E9E', // Grey
-  uneasy: '#FF9800', // Orange
-  unsafe: '#F44336' // Red
+  'good!': '#4CAF50',
+  'okay!': '#FFEB3B',
+  neutral: '#9E9E9E',
+  uneasy: '#FF9800',
+  unsafe: '#F44336'
 }
 
 const issueColors = {
@@ -29,6 +29,122 @@ export default function AnalyticsView({ locations, reports, emotions }) {
   const [isLoading, setIsLoading] = useState(false)
   const [locationReportBreakdown, setLocationReportBreakdown] = useState(null)
   const [locationEmotionTrends, setLocationEmotionTrends] = useState(null)
+
+  // Process emotions data for timeline
+  const emotionsOverTime = useMemo(() => {
+    if (!selectedArea || !emotions) return []
+    
+    // Group emotions by date
+    const groupedByDate = emotions.reduce((acc, emotion) => {
+      if (emotion.location?.area !== selectedArea) return acc
+      
+      const date = new Date(emotion.createdAt).toISOString().split('T')[0]
+      if (!acc[date]) {
+        acc[date] = {
+          date,
+          'good!': 0,
+          'okay!': 0,
+          neutral: 0,
+          uneasy: 0,
+          unsafe: 0
+        }
+      }
+      acc[date][emotion.emotion]++
+      return acc
+    }, {})
+
+    // Convert to array and sort by date
+    return Object.values(groupedByDate).sort((a, b) => 
+      new Date(a.date) - new Date(b.date)
+    )
+  }, [selectedArea, emotions])
+
+  // Process reports data for timeline
+  const issuesOverTime = useMemo(() => {
+    if (!selectedArea || !reports) return []
+    
+    // Group reports by date
+    const groupedByDate = reports.reduce((acc, report) => {
+      if (report.location?.area !== selectedArea) return acc
+      
+      const date = new Date(report.createdAt).toISOString().split('T')[0]
+      if (!acc[date]) {
+        acc[date] = {
+          date,
+          broken_pavement: 0,
+          missing_sidewalk: 0,
+          obstruction: 0,
+          no_ramps: 0,
+          poor_lighting: 0,
+          others: 0
+        }
+      }
+      acc[date][report.issueType]++
+      return acc
+    }, {})
+
+    // Convert to array and sort by date
+    return Object.values(groupedByDate).sort((a, b) => 
+      new Date(a.date) - new Date(b.date)
+    )
+  }, [selectedArea, reports])
+
+   // Process emotions data for timeline (Location level)
+   const locationEmotionsOverTime = useMemo(() => {
+    if (!selectedLocation || !emotions) return []
+    
+    const groupedByDate = emotions.reduce((acc, emotion) => {
+      if (emotion.location?._id !== selectedLocation) return acc
+      
+      const date = new Date(emotion.createdAt).toISOString().split('T')[0]
+      if (!acc[date]) {
+        acc[date] = {
+          date,
+          'good!': 0,
+          'okay!': 0,
+          neutral: 0,
+          uneasy: 0,
+          unsafe: 0
+        }
+      }
+      acc[date][emotion.emotion]++
+      return acc
+    }, {})
+
+    return Object.values(groupedByDate).sort((a, b) => 
+      new Date(a.date) - new Date(b.date)
+    )
+  }, [selectedLocation, emotions])
+
+  // Process reports data for timeline (Location level)
+  const locationIssuesOverTime = useMemo(() => {
+    if (!selectedLocation || !reports) return []
+    
+    const groupedByDate = reports.reduce((acc, report) => {
+      if (report.location?._id !== selectedLocation) return acc
+      
+      const date = new Date(report.createdAt).toISOString().split('T')[0]
+      if (!acc[date]) {
+        acc[date] = {
+          date,
+          broken_pavement: 0,
+          missing_sidewalk: 0,
+          obstruction: 0,
+          no_ramps: 0,
+          poor_lighting: 0,
+          others: 0
+        }
+      }
+      acc[date][report.issueType]++
+      return acc
+    }, {})
+
+    return Object.values(groupedByDate).sort((a, b) => 
+      new Date(a.date) - new Date(b.date)
+    )
+  }, [selectedLocation, reports])
+
+
   // Filter locations by selected area
   const locationsByArea = useMemo(() => {
     if (!selectedArea) return []
@@ -122,8 +238,65 @@ export default function AnalyticsView({ locations, reports, emotions }) {
         </CardContent>
       </Card>
 
+      
+
       {selectedArea && (
         <>
+          <Card>
+            <CardHeader>
+              <CardTitle>Emotions Over Time</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={emotionsOverTime}>
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    {Object.entries(emotionColors).map(([emotion, color]) => (
+                      <Line
+                        key={emotion}
+                        type="monotone"
+                        dataKey={emotion}
+                        stroke={color}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Issues Over Time</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={issuesOverTime}>
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    {Object.entries(issueColors).map(([issue, color]) => (
+                      <Line
+                        key={issue}
+                        type="monotone"
+                        dataKey={issue}
+                        stroke={color}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
           <Card>
             <CardHeader>
               <CardTitle>Area Report</CardTitle>
@@ -174,6 +347,40 @@ export default function AnalyticsView({ locations, reports, emotions }) {
               </div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Area Reports Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie 
+                    data={Object.entries(issueColors).map(([issue]) => ({
+                      name: issue,
+                      value: reports.filter(r => 
+                        r.location?.area === selectedArea && 
+                        r.issueType === issue
+                      ).length
+                    }))}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {Object.entries(issueColors).map(([issue, color]) => (
+                      <Cell key={issue} fill={color} />
+                    ))}
+                  </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
         </>
       )}
     </div>
@@ -205,6 +412,61 @@ export default function AnalyticsView({ locations, reports, emotions }) {
 
         {selectedLocation && (
           <>
+          <Card>
+              <CardHeader>
+                <CardTitle>Location Emotions Over Time</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={locationEmotionsOverTime}>
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      {Object.entries(emotionColors).map(([emotion, color]) => (
+                        <Line
+                          key={emotion}
+                          type="monotone"
+                          dataKey={emotion}
+                          stroke={color}
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Location Issues Over Time</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={locationIssuesOverTime}>
+                      <XAxis dataKey="date" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      {Object.entries(issueColors).map(([issue, color]) => (
+                        <Line
+                          key={issue}
+                          type="monotone"
+                          dataKey={issue}
+                          stroke={color}
+                          strokeWidth={2}
+                          dot={false}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
             <Card>
               <CardHeader>
                 <CardTitle>Location Reports</CardTitle>
