@@ -114,27 +114,9 @@ const MapView: React.FC<MapViewProps> = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex justify-between items-center">
-          <span>Issue Map</span>
-          <div className="flex space-x-2">
-            <select 
-              className="p-2 border rounded-lg text-sm"
-              value={selectedArea}
-              onChange={(e) => setSelectedArea(e.target.value)}
-            >
-              <option value="all">All Areas</option>
-              {[...new Set(locations.map(location => location.area))].map(area => (
-                <option key={area} value={area}>{area}</option>
-              ))}
-            </select>
-            <select
-              className="p-2 border rounded-lg text-sm"
-              value={viewMode}
-              onChange={(e) => setViewMode(e.target.value as 'report' | 'emotion')}
-            >
-              <option value="report">Report View</option>
-              <option value="emotion">Emotion View</option>
-            </select>
-          </div>
+            <div className="flex space-x-2 pb-4">
+            <span className='absolute top-0 right-0 p-4'>Issue Map</span>
+            </div>
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -142,7 +124,7 @@ const MapView: React.FC<MapViewProps> = ({
           <MapContainer 
             center={[14.66, 121.06]} // Centered on the approximate area
             zoom={13} 
-            style={{ height: '100%', width: '100%' }}
+            style={{ height: '170%', width: '100%' }}
           >
             <TileLayer
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
