@@ -605,3 +605,5 @@ export default function AnalyticsView({ locations, reports, emotions }) {
     </div>
   );
 }
+
+//
