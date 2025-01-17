@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import MarkdownRenderer from "./ui/markdown";
 
 const emotionColors = {
   "good!": "#4CAF50",
@@ -240,32 +241,34 @@ export default function AnalyticsView({ locations, reports, emotions }) {
 
   // Area-level overview component
   const AreaOverview = () => (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="pt-16">Area Selection</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Select value={selectedArea} onValueChange={setSelectedArea}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select an area" />
-            </SelectTrigger>
-            <SelectContent>
-              {Array.from(new Set(locations.map((l) => l.area))).map((area) => (
-                <SelectItem key={area} value={area}>
-                  {area}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </CardContent>
-      </Card>
-
-      {selectedArea && (
-        <>
-          <Card>
+    <div className="flex flex-col lg:flex-row gap-3">
+      <div className="basis-2/3 flex-grow-0 flex flex-col gap-6">
+        {/* First Row: Two Cards */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="pt-16">Area Selection</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Select value={selectedArea} onValueChange={setSelectedArea}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select an area" />
+              </SelectTrigger>
+              <SelectContent>
+                {Array.from(new Set(locations.map((l) => l.area))).map(
+                  (area) => (
+                    <SelectItem key={area} value={area}>
+                      {area}
+                    </SelectItem>
+                  )
+                )}
+              </SelectContent>
+            </Select>
+          </CardContent>
+        </Card>
+        <div className="flex flex-col lg:flex-row gap-3">
+          <Card className="flex-1">
             <CardHeader>
-              <CardTitle>Emotions Over Time</CardTitle>
+              <CardTitle>Sentiments Over Time</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -290,87 +293,7 @@ export default function AnalyticsView({ locations, reports, emotions }) {
               </div>
             </CardContent>
           </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Issues Over Time</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-80">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={issuesOverTime}>
-                    <XAxis dataKey="date" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    {Object.entries(issueColors).map(([issue, color]) => (
-                      <Line
-                        key={issue}
-                        type="monotone"
-                        dataKey={issue}
-                        stroke={color}
-                        strokeWidth={2}
-                        dot={false}
-                      />
-                    ))}
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>Area Report</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {isLoading ? (
-                <div className="flex justify-center">
-                  <Loader2 className="h-8 w-8 animate-spin" />
-                </div>
-              ) : (
-                <div className="prose">
-                  {areaReport || "No report available"}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Area Sentiment Distribution</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={Object.entries(emotionColors).map(([emotion]) => ({
-                        name: emotion,
-                        value: emotions.filter(
-                          (e) =>
-                            e.location?.area === selectedArea &&
-                            e.emotion === emotion
-                        ).length,
-                      }))}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={80}
-                      fill="#8884d8"
-                      dataKey="value"
-                    >
-                      {Object.entries(emotionColors).map(([emotion, color]) => (
-                        <Cell key={emotion} fill={color} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
+          <Card className="flex-1">
             <CardHeader>
               <CardTitle>Area Reports Distribution</CardTitle>
             </CardHeader>
@@ -404,43 +327,134 @@ export default function AnalyticsView({ locations, reports, emotions }) {
               </div>
             </CardContent>
           </Card>
-        </>
-      )}
+        </div>
+
+        {/* Second Row: Remaining Cards */}
+        <div className="flex flex-col lg:flex-row flex-wrap gap-3">
+          <Card className="flex-1">
+            <CardHeader>
+              <CardTitle>Reports Over Time</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={issuesOverTime}>
+                    <XAxis dataKey="date" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    {Object.entries(issueColors).map(([issue, color]) => (
+                      <Line
+                        key={issue}
+                        type="monotone"
+                        dataKey={issue}
+                        stroke={color}
+                        strokeWidth={2}
+                        dot={false}
+                      />
+                    ))}
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="flex-1">
+            <CardHeader>
+              <CardTitle>Area Sentiment Distribution</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={Object.entries(emotionColors).map(([emotion]) => ({
+                        name: emotion,
+                        value: emotions.filter(
+                          (e) =>
+                            e.location?.area === selectedArea &&
+                            e.emotion === emotion
+                        ).length,
+                      }))}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {Object.entries(emotionColors).map(([emotion, color]) => (
+                        <Cell key={emotion} fill={color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      <div className="flex flex-col basis-1/3 flex-grow-0 gap-3">
+        {selectedArea && (
+          <>
+            <Card>
+              <CardHeader>
+                <CardTitle>Area Report</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="flex justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin" />
+                  </div>
+                ) : (
+                  <div className="prose">
+                    <MarkdownRenderer
+                      markdown={areaReport || "No report available"}
+                    />
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
+      </div>
     </div>
   );
 
   // Location-specific view component
   const LocationView = () =>
     selectedArea && (
-      <div className="space-y-4 mt-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Location Selection</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Select
-              value={selectedLocation}
-              onValueChange={setSelectedLocation}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a location" />
-              </SelectTrigger>
-              <SelectContent>
-                {locationsByArea.map((location) => (
-                  <SelectItem key={location._id} value={location._id}>
-                    {location.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </CardContent>
-        </Card>
-
-        {selectedLocation && (
-          <>
+      <div className="flex flex-col lg:flex-row gap-3">
+        <div className="basis-2/3 flex-grow-0 flex flex-col gap-6">
+          {/* First Row: Two Cards */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Location Selection</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Select
+                value={selectedLocation}
+                onValueChange={setSelectedLocation}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a location" />
+                </SelectTrigger>
+                <SelectContent>
+                  {locationsByArea.map((location) => (
+                    <SelectItem key={location._id} value={location._id}>
+                      {location.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+          <div className="flex flex-col lg:flex-row gap-3">
             <Card>
               <CardHeader>
-                <CardTitle>Location Emotions Over Time</CardTitle>
+                <CardTitle>Location Sentiments Over Time</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
@@ -465,10 +479,9 @@ export default function AnalyticsView({ locations, reports, emotions }) {
                 </div>
               </CardContent>
             </Card>
-
             <Card>
               <CardHeader>
-                <CardTitle>Location Issues Over Time</CardTitle>
+                <CardTitle>Location Report Over Time</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-80">
@@ -489,6 +502,41 @@ export default function AnalyticsView({ locations, reports, emotions }) {
                         />
                       ))}
                     </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Second Row: Remaining Cards */}
+          <div className="flex flex-col lg:flex-row flex-wrap gap-3">
+            <Card>
+              <CardHeader>
+                <CardTitle>Location Sentiment Trends</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={locationEmotionTrends || []}
+                        dataKey="count"
+                        nameKey="emotion"
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        fill="#8884d8"
+                        label
+                      >
+                        {locationEmotionTrends?.map((entry, index) => (
+                          <Cell
+                            key={`cell-${index}`}
+                            fill={emotionColors[entry.emotion]}
+                          />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
                   </ResponsiveContainer>
                 </div>
               </CardContent>
@@ -524,57 +572,29 @@ export default function AnalyticsView({ locations, reports, emotions }) {
                 </div>
               </CardContent>
             </Card>
+          </div>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Location Sentiment Trends</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={locationEmotionTrends || []}
-                        dataKey="count"
-                        nameKey="emotion"
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={80}
-                        fill="#8884d8"
-                        label
-                      >
-                        {locationEmotionTrends?.map((entry, index) => (
-                          <Cell
-                            key={`cell-${index}`}
-                            fill={emotionColors[entry.emotion]}
-                          />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Location Report</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="flex justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin" />
-                  </div>
-                ) : (
-                  <div className="prose">
-                    {locationReport || "No report available"}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </>
-        )}
+          {selectedLocation && (
+            <>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Location Report</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="flex justify-center">
+                      <Loader2 className="h-8 w-8 animate-spin" />
+                    </div>
+                  ) : (
+                    <div className="prose">
+                      {locationReport || "No report available"}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </div>
       </div>
     );
 

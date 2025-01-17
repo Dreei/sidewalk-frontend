@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Location } from '../types'
+import React, { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Location } from "../types";
 
 interface ReportFormProps {
   locations: Location[];
@@ -19,68 +19,76 @@ interface FormData {
   locationId: string | null;
 }
 
-const ReportForm: React.FC<ReportFormProps> = ({ locations, onReportSubmitted, selectedCoordinates, selectedLocationId }) => {
+const ReportForm: React.FC<ReportFormProps> = ({
+  locations,
+  onReportSubmitted,
+  selectedCoordinates,
+  selectedLocationId,
+}) => {
   const [formData, setFormData] = useState<FormData>({
-    userType: 'general_public',
-    issueType: 'broken_pavement',
-    description: '',
+    userType: "general_public",
+    issueType: "broken_pavement",
+    description: "",
     coordinates: null,
     locationId: null,
-  })
+  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prevData => ({ ...prevData, [name]: value }))
-  }
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
     if (!selectedCoordinates || !selectedLocationId) {
-      alert('Please select a location on the map')
-      return
+      alert("Please select a location on the map");
+      return;
     }
     try {
-      const response = await fetch('http://localhost:5000/api/reports', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/reports", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           ...formData,
           coordinates: selectedCoordinates,
-          locationId: selectedLocationId
+          locationId: selectedLocationId,
         }),
-      })
+      });
       if (response.ok) {
-        onReportSubmitted()
+        onReportSubmitted();
         // Reset form
         setFormData({
-          userType: 'general_public',
-          issueType: 'broken_pavement',
-          description: '',
+          userType: "general_public",
+          issueType: "broken_pavement",
+          description: "",
           coordinates: null,
           locationId: null,
-        })
+        });
       } else {
-        console.error('Failed to submit report')
+        console.error("Failed to submit report");
       }
     } catch (error) {
-      console.error('Error submitting report:', error)
+      console.error("Error submitting report:", error);
     }
-  }
+  };
 
-  const selectedLocation = locations.find(loc => loc._id === selectedLocationId)
+  const selectedLocation = locations.find(
+    (loc) => loc._id === selectedLocationId
+  );
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Report Sidewalk Issue</CardTitle>
-      </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2">I am a:</label>
-            <select 
+            <label className="block text-sm font-medium mb-2 mt-4">
+              I am a:
+            </label>
+            <select
               name="userType"
               value={formData.userType}
               onChange={handleInputChange}
@@ -94,8 +102,10 @@ const ReportForm: React.FC<ReportFormProps> = ({ locations, onReportSubmitted, s
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Issue Type:</label>
-            <select 
+            <label className="block text-sm font-medium mb-2">
+              Issue Type:
+            </label>
+            <select
               name="issueType"
               value={formData.issueType}
               onChange={handleInputChange}
@@ -111,7 +121,9 @@ const ReportForm: React.FC<ReportFormProps> = ({ locations, onReportSubmitted, s
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-2">Description:</label>
+            <label className="block text-sm font-medium mb-2">
+              Description:
+            </label>
             <textarea
               name="description"
               value={formData.description}
@@ -124,20 +136,27 @@ const ReportForm: React.FC<ReportFormProps> = ({ locations, onReportSubmitted, s
 
           {selectedCoordinates && selectedLocation && (
             <div>
-              <label className="block text-sm font-medium mb-2">Selected Location:</label>
+              <label className="block text-sm font-medium mb-2">
+                Selected Location:
+              </label>
               <p>Location: {selectedLocation.name}</p>
-              <p>Coordinates: {selectedCoordinates[1].toFixed(6)}, {selectedCoordinates[0].toFixed(6)}</p>
+              <p>
+                Coordinates: {selectedCoordinates[1].toFixed(6)},{" "}
+                {selectedCoordinates[0].toFixed(6)}
+              </p>
             </div>
           )}
 
-          <button type="submit" className="w-full py-2 bg-blue-500 text-white rounded-lg">
+          <button
+            type="submit"
+            className="w-full py-2 bg-blue-500 text-white rounded-lg"
+          >
             Submit Report
           </button>
         </form>
       </CardContent>
     </Card>
-  )
-}
+  );
+};
 
-export default ReportForm
-
+export default ReportForm;
