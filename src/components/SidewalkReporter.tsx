@@ -110,6 +110,12 @@ const SidewalkReporter = () => {
             </button>
           </div>
           <img
+            src="/landas.png"
+            alt="landas"
+            className="w-24 sm:w-32 md:w-40" // Tailwind classes for responsiveness
+            style={{ maxWidth: "100%", height: "auto" }} // Ensure responsiveness without distortion
+          />
+          <img
             src="/acssist.png"
             alt="acssist"
             className="w-24 sm:w-32 md:w-40" // Tailwind classes for responsiveness
