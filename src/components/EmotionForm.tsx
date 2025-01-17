@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Location, Emotion } from '../types'
-import { Smile, Meh, Frown, AlertTriangle } from 'lucide-react'
+import { Laugh,Smile, Meh, Frown, AlertTriangle } from 'lucide-react'
 
 interface EmotionFormProps {
   locations: Location[];
@@ -18,17 +18,19 @@ interface FormData {
 }
 
 const emotionIcons: Record<Emotion['emotion'], React.ReactNode> = {
-  pleasant: <Smile className="w-6 h-6" />,
-  neutral: <Meh className="w-6 h-6" />,
-  uncomfortable: <Frown className="w-6 h-6" />,
-  unsafe: <AlertTriangle className="w-6 h-6" />
+  'good!': <Laugh className="w-4 h-4" />,
+  'okay!': <Smile className="w-4 h-4" />,
+  neutral: <Meh className="w-4 h-4" />,
+  uneasy: <Frown className="w-4 h-4" />,
+  unsafe: <AlertTriangle className="w-4 h-4" />
 }
 
 const emotionColors: Record<Emotion['emotion'], string> = {
-  pleasant: '#4CAF50',
-  neutral: '#9E9E9E',
-  uncomfortable: '#FFC107',
-  unsafe: '#F44336'
+  'good!': '#4CAF50', // Green
+  'okay!': '#FFEB3B', // Yellow
+  neutral: '#9E9E9E', // Grey
+  uneasy: '#FF9800', // Orange
+  unsafe: '#F44336' // Red
 }
 
 const EmotionForm: React.FC<EmotionFormProps> = ({ locations, onEmotionSubmitted, selectedLocationId }) => {

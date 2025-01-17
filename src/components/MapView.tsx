@@ -17,10 +17,11 @@ L.Icon.Default.mergeOptions({
 })
 
 const emotionColors: Record<Emotion['emotion'], string> = {
-  pleasant: '#4CAF50',
-  neutral: '#9E9E9E',
-  uncomfortable: '#FFC107',
-  unsafe: '#F44336'
+  'good!': '#4CAF50', // Green
+  'okay!': '#FFEB3B', // Yellow
+  neutral: '#9E9E9E', // Grey
+  uneasy: '#FF9800', // Orange
+  unsafe: '#F44336' // Red
 }
 
 const issueIcons: Record<string, React.ReactNode> = {

@@ -20,7 +20,7 @@ export interface Report {
 
 export interface Emotion {
   _id: string;
-  emotion: 'pleasant' | 'neutral' | 'uncomfortable' | 'unsafe';
+  emotion: 'good!' | 'okay!' | 'neutral' | 'uneasy' | 'unsafe';
   userType: 'general_public' | 'elderly' | 'pwd' | 'bike_user';
   description: string;
   location: string | Location;
