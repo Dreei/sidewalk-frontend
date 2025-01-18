@@ -164,7 +164,6 @@ const MapView: React.FC<MapViewProps> = ({
         />
         <MapEvents />
         <MilestonesTab />
-
         {filteredLocations.map((location) => {
           const convertedCoordinates = convertCoordinates(
             location.geometry.coordinates[0]

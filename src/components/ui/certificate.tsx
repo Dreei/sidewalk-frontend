@@ -1,9 +1,9 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { X } from 'lucide-react';
-import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogClose } from "@/components/ui/dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { X } from "lucide-react";
 
 interface CertificateProps {
   onCertificateClosed: () => void;
@@ -17,24 +17,13 @@ const Certificate: React.FC<CertificateProps> = ({
   dateReceived,
 }) => {
   return (
-    <Card className="w-full max-w-md mx-auto">
-      <CardHeader className="bg-blue-500 text-white relative">
-        <DialogHeader>
-          <DialogTitle className="text-xl text-center">
-            Congratulations!
-          </DialogTitle>
-        </DialogHeader>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="absolute right-2 top-2 text-white hover:text-blue-200"
-          onClick={onCertificateClosed}
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Close</span>
-        </Button>
+    <Card className="overflow-hidden">
+      <CardHeader className="bg-blue-500 text-white">
+        <CardTitle className="text-xl text-center">
+          Share with friends
+        </CardTitle>
         <p className="text-center text-sm opacity-90">
-          You've earned a tree certificate for your contribution!
+          Share your tree certificate and badge with your friends!
         </p>
       </CardHeader>
       <CardContent className="p-6">
@@ -71,7 +60,7 @@ const Certificate: React.FC<CertificateProps> = ({
             <div className="flex flex-row w-full justify-center text-sm text-gray-600 mt-4">
               <div className="text-center">
                 <p className="font-medium">DATE RECEIVED</p>
-                <p>{dateReceived || "-"}</p>
+                {/* <p>{dateReceived || "-"}</p> */}
               </div>
             </div>
 
@@ -80,7 +69,7 @@ const Certificate: React.FC<CertificateProps> = ({
                 CERTIFICATE NUMBER
               </p>
               <p className="text-blue-500 font-mono text-center">
-                {certificateNumber}
+                {/* {certificateNumber} */}
               </p>
             </div>
           </div>
@@ -89,6 +78,3 @@ const Certificate: React.FC<CertificateProps> = ({
     </Card>
   );
 };
-
-export default Certificate;
-
