@@ -11,6 +11,7 @@ import ReportForm from "./ReportForm";
 import EmotionForm from "./EmotionForm";
 import AnalyticsView from "./AnalyticsView";
 import { Location, Report, Emotion } from "../types";
+import ChatPopup from "./ui/popup";
 
 const MapView = dynamic(() => import("./MapView"), { ssr: false });
 
@@ -82,6 +83,16 @@ const SidewalkReporter = () => {
     setIsModalOpen(true);
   };
 
+  const [isChatOpen, setIsChatOpen] = useState(false);
+
+  const handleFabClick = () => {
+    setIsChatOpen(true);
+  };
+
+  const handleCloseChat = () => {
+    setIsChatOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-100">
       {/* Navigation tabs - responsive layout */}
@@ -125,7 +136,7 @@ const SidewalkReporter = () => {
       </div>
 
       {/* Main content area - adjusted for fixed header */}
-      <div className="h-[calc(100vh-3rem)]">
+      <div className="h-[calc(99vh-3rem)]">
         {activeTab === "map" && (
           <MapView
             locations={locations}
@@ -146,6 +157,13 @@ const SidewalkReporter = () => {
             />
           </div>
         )}
+        {isChatOpen && <ChatPopup onClose={handleCloseChat} />}
+        <button
+          onClick={handleFabClick} // Add your custom handler here
+          className="fixed bottom-4 left-4 z-50 flex items-center justify-center h-12 w-12 rounded-full bg-blue-500 text-white shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
+          <span className="material-icons">💬</span>{" "}
+        </button>
       </div>
 
       {/* Modal - responsive design */}
