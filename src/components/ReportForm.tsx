@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Location } from "../types";
 
 interface ReportFormProps {
   locations: Location[];
-  onReportSubmitted: () => void;
+  onReportSubmitted: (certificateNumber: string) => void;
   selectedCoordinates: [number, number] | null;
   selectedLocationId: string | null;
 }
@@ -59,7 +59,8 @@ const ReportForm: React.FC<ReportFormProps> = ({
         }),
       });
       if (response.ok) {
-        onReportSubmitted();
+        const data = await response.json();
+        onReportSubmitted(data.certificateNumber);
         // Reset form
         setFormData({
           userType: "general_public",
@@ -160,3 +161,4 @@ const ReportForm: React.FC<ReportFormProps> = ({
 };
 
 export default ReportForm;
+

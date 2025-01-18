@@ -15,6 +15,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Location, Report, Emotion } from "../types";
 import { ThumbsUp, ThumbsDown } from "lucide-react";
+import MilestonesTab from "./MilestonesTab";
 
 // Fix for default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -162,6 +163,8 @@ const MapView: React.FC<MapViewProps> = ({
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <MapEvents />
+        <MilestonesTab />
+
         {filteredLocations.map((location) => {
           const convertedCoordinates = convertCoordinates(
             location.geometry.coordinates[0]
