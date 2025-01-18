@@ -452,7 +452,7 @@ export default function AnalyticsView({ locations, reports, emotions }) {
             </CardContent>
           </Card>
           <div className="flex flex-col lg:flex-row gap-3">
-            <Card>
+            <Card className="flex-1">
               <CardHeader>
                 <CardTitle>Location Sentiments Over Time</CardTitle>
               </CardHeader>
@@ -479,7 +479,7 @@ export default function AnalyticsView({ locations, reports, emotions }) {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="flex-1">
               <CardHeader>
                 <CardTitle>Location Report Over Time</CardTitle>
               </CardHeader>
@@ -510,7 +510,7 @@ export default function AnalyticsView({ locations, reports, emotions }) {
 
           {/* Second Row: Remaining Cards */}
           <div className="flex flex-col lg:flex-row flex-wrap gap-3">
-            <Card>
+            <Card className="flex-1">
               <CardHeader>
                 <CardTitle>Location Sentiment Trends</CardTitle>
               </CardHeader>
@@ -541,7 +541,8 @@ export default function AnalyticsView({ locations, reports, emotions }) {
                 </div>
               </CardContent>
             </Card>
-            <Card>
+
+            <Card className="flex-1">
               <CardHeader>
                 <CardTitle>Location Reports</CardTitle>
               </CardHeader>
@@ -573,7 +574,9 @@ export default function AnalyticsView({ locations, reports, emotions }) {
               </CardContent>
             </Card>
           </div>
+        </div>
 
+        <div className="flex flex-col basis-1/3 flex-grow-0 gap-3">
           {selectedLocation && (
             <>
               <Card>
@@ -587,7 +590,9 @@ export default function AnalyticsView({ locations, reports, emotions }) {
                     </div>
                   ) : (
                     <div className="prose">
-                      {locationReport || "No report available"}
+                      <MarkdownRenderer
+                        markdown={locationReport || "No report available"}
+                      />
                     </div>
                   )}
                 </CardContent>
