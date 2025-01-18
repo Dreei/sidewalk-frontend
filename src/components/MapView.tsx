@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   MapContainer,
   TileLayer,
@@ -15,15 +14,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Location, Report, Emotion } from "../types";
-import {
-  AlertTriangle,
-  Construction,
-  EyeOff,
-  Footprints,
-  Lightbulb,
-  ShipWheelIcon as Wheelchair,
-  HelpCircle,
-} from "lucide-react";
+import { ThumbsUp, ThumbsDown } from "lucide-react";
 
 // Fix for default marker icon
 delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -228,6 +219,19 @@ const MapView: React.FC<MapViewProps> = ({
                 <h3 className="font-bold">Report</h3>
                 <p>Issue: {report.issueType}</p>
                 <p>Description: {report.description}</p>
+              </div>
+              <div className="flex items-center gap-6">
+                <button
+                  className={`flex items-center gap-2 transition-colors `}
+                >
+                  <ThumbsUp className="w-5 h-5" />
+                  <span className="text-sm font-medium">{0}</span>
+                </button>
+
+                <button className={`flex items-center gap-2 transition-colors`}>
+                  <ThumbsDown className="w-5 h-5" />
+                  <span className="text-sm font-medium">{0}</span>
+                </button>
               </div>
             </Popup>
           </Marker>
